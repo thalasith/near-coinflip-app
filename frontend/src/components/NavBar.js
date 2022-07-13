@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 const NavBar = ({ currentUser, signIn, signOut }) => {
   const [navbarOpen, setNavbarOpen] = useState(false);
@@ -18,8 +19,7 @@ const NavBar = ({ currentUser, signIn, signOut }) => {
               type="button"
               onClick={() => setNavbarOpen(!navbarOpen)}
             >
-              <a href="/">Click here</a>
-              {/* <i className=""></i> */}
+              <GiHamburgerMenu />
             </button>
           </div>
           <div
