@@ -58,7 +58,7 @@ const NavBar = ({ currentUser, signIn, signOut }) => {
                 <li className="nav-item">
                   <a
                     href="/"
-                    onClick={signIn}
+                    onClick={(e) => signIn(e)}
                     className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug rounded bg-white text-black hover:text-white hover:bg-black"
                   >
                     Sign In

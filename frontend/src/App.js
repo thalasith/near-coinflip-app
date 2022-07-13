@@ -45,7 +45,8 @@ function App({ contract, currentUser, nearConfig, wallet }) {
     setLoading(false);
   };
 
-  const signIn = () => {
+  const signIn = (e) => {
+    e.preventDefault();
     wallet.requestSignIn(
       {
         contractId: nearConfig.contractName,
@@ -66,6 +67,7 @@ function App({ contract, currentUser, nearConfig, wallet }) {
         contract={contract}
         updateCredits={updateCredits}
       />
+
       <>
         <h3>Play</h3>
         <p>Current Credits: {credits}</p>
