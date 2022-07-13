@@ -1,5 +1,5 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::{env, near_bindgen, AccountId, Balance, Promise, collections::{ UnorderedMap }};
+use near_sdk::{json_types::U128, env, near_bindgen, AccountId, Balance, Promise, collections::{ UnorderedMap }};
 
 // CONSTS
 
@@ -31,23 +31,21 @@ impl CoinFlip {
     #[payable]
     pub fn deposit(&mut self) {
         let account_id = env::signer_account_id();
-        // println!("Account Id: {}", account_id);
         let deposit = env::attached_deposit();
-        // println!("Deposit: {}", deposit);
         let mut credits = self.credits.get(&account_id).unwrap_or(0);
-        // println!("Credits: {}", credits);
         credits = credits + deposit;
         self.credits.insert(&account_id, &credits);
-        // let credits_2 = self.credits.get(&account_id).unwrap_or(0);
-        // println!("Credits (should be 1): {}", credits_2);
     }
 
-    pub fn withdraw(&mut self, withdrawal: u128) {
+    // withdraws from the contract.
+    //Asserts that the play does not take more credits than they currently have.
+    pub fn withdraw(&mut self, withdrawal:U128) -> Promise {
         let account_id = env::signer_account_id();
         let mut credits = self.credits.get(&account_id).unwrap_or(0);
-        credits = credits - withdrawal;
+        assert!(credits > 0, "no credits to play");
+        credits = credits - withdrawal.0;
         self.credits.insert(&account_id, &credits);
-        Promise::new(account_id).transfer(withdrawal.into());
+        Promise::new(account_id).transfer(withdrawal.0)
     }
 
     //5000000000000000000000000 = 5 Near
@@ -72,12 +70,13 @@ impl CoinFlip {
         } 
     }
 
-    // pub fn reset_credits(&mut self) {
-    //     let account_id = env::signer_account_id();
-    //     let mut credits = self.credits.get(&account_id).unwrap_or(0);
-    //     credits = 0;
-    //     self.credits.insert()
-    // }
+    // View contracts
+    pub fn get_account_balance(&self) -> u128 {
+        let amount = env::account_balance();
+        let deposited = env::attached_deposit();
+        let different = amount - deposited;
+        different
+    }
 
     pub fn get_credits(&self, account_id: AccountId) -> u128 {
         self.credits.get(&account_id).unwrap_or(0).into()
@@ -124,10 +123,13 @@ mod tests {
         context.attached_deposit = ntoy(1).into();
         testing_env!(context.clone());
 
-        let mut contract = CoinFlip::new(AccountId::try_from(context.current_account_id.clone()).unwrap());
+        let mut contract = CoinFlip::new(AccountId::try_from(context.current_account_id.clone()).unwrap());        
         contract.deposit();
-
-        assert_eq!(contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()), ntoy(1).into());
+        contract.withdraw(ntoy(1).into());
+        // println!("After withdrawal: {}", contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()));
+        // println!("Account Balance after withdrawal: {}", context.account_balance);
+        // println!("{}", context.signer_account_id)
+        // assert_eq!(contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()), ntoy(1).into());
     }
 
 }
