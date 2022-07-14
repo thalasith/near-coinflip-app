@@ -42,13 +42,14 @@ impl CoinFlip {
     pub fn withdraw(&mut self, withdrawal:U128) -> Promise {
         let account_id = env::signer_account_id();
         let mut credits = self.credits.get(&account_id).unwrap_or(0);
+        println!("Credits: {}", credits);
+        println!("Withdrawal: {}", withdrawal.0);
+        assert!(credits >= withdrawal.0, "You do not have enough credits to withdraw");
         assert!(credits > 0, "no credits to play");
         credits = credits - withdrawal.0;
         self.credits.insert(&account_id, &credits);
         Promise::new(account_id).transfer(withdrawal.0)
     }
-
-    //5000000000000000000000000 = 5 Near
 
     pub fn play(&mut self, coin_side: String) -> bool {
         let account_id = env::signer_account_id();
@@ -61,7 +62,7 @@ impl CoinFlip {
         // let coin_flip: u8 = rand::thread_rng().gen_range(1..=2);
         // if it is equal to 1 and coin_side chosen is heads, player winds
         if (rand < PROB && coin_side == "heads") || (rand >= PROB && coin_side == "tails")  {
-            credits = credits + 10 * ONE_NEAR;
+            credits = credits + ONE_NEAR;
             self.credits.insert(&account_id, &credits);
             return true
         } else  {
@@ -105,7 +106,7 @@ mod tests {
             input: vec![],
             block_index: 0,
             block_timestamp: 0,
-            account_balance: 0,
+            account_balance: 5,
             account_locked_balance: 0,
             attached_deposit: 0,
             prepaid_gas: 10u64.pow(18),
@@ -125,11 +126,41 @@ mod tests {
 
         let mut contract = CoinFlip::new(AccountId::try_from(context.current_account_id.clone()).unwrap());        
         contract.deposit();
-        contract.withdraw(ntoy(1).into());
-        // println!("After withdrawal: {}", contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()));
-        // println!("Account Balance after withdrawal: {}", context.account_balance);
-        // println!("{}", context.signer_account_id)
-        // assert_eq!(contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()), ntoy(1).into());
+        
+        assert_eq!(contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()), ntoy(1).into());
     }
+
+    #[test]
+    fn make_deposit_and_withdraw_success() {
+
+        let mut context = get_context();
+        context.attached_deposit = ntoy(1).into();
+        testing_env!(context.clone());
+
+        let mut contract = CoinFlip::new(AccountId::try_from(context.current_account_id.clone()).unwrap());        
+        contract.deposit();
+        
+        assert_eq!(contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()), ntoy(1).into());
+        contract.withdraw(ntoy(1).into());
+
+        assert_eq!(contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()), ntoy(0).into());
+    }
+
+    #[test]
+    fn make_deposit_and_withdraw_fail() {
+
+        let mut context = get_context();
+        context.attached_deposit = ntoy(1).into();
+        testing_env!(context.clone());
+
+        let mut contract = CoinFlip::new(AccountId::try_from(context.current_account_id.clone()).unwrap());        
+        contract.deposit();
+        
+        assert_eq!(contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()), ntoy(1).into());
+        contract.withdraw(ntoy(5).into());
+
+        // assert_eq!(contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()), ntoy(0).into());
+    }
+
 
 }
