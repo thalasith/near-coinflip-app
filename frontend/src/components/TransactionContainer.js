@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Big from "big.js";
+import ClipLoader from "react-spinners/ClipLoader";
 import * as nearAPI from "near-api-js";
+
 const {
   utils: {
     format: { parseNearAmount },
@@ -14,28 +16,60 @@ const BOATLOAD_OF_GAS = Big(3)
 const TransactionContainer = ({ contract, updateCredits, currentUser }) => {
   const [deposit, setDeposit] = useState("");
   const [withdraw, setWithdraw] = useState("");
+  const [depositError, setDepositError] = useState("");
+  const [withdrawError, setWithdrawError] = useState("");
+  const [loading, setLoading] = useState("");
 
   const handleDeposit = async () => {
-    await contract.deposit({}, BOATLOAD_OF_GAS, parseNearAmount(deposit));
-    currentUser && updateCredits();
+    if (deposit === "") {
+      setDepositError("Please type in a number!");
+    } else {
+      await contract.deposit({}, BOATLOAD_OF_GAS, parseNearAmount(deposit));
+      currentUser && updateCredits();
+    }
   };
 
-  const handleWithdraw = async () => {
-    await contract.withdraw(
-      { withdrawal: parseNearAmount(withdraw) },
-      BOATLOAD_OF_GAS
-    );
+  const handleDepositChange = async (e) => {
+    setDepositError("");
+    setDeposit(e);
+  };
 
-    currentUser && updateCredits();
+  const handleWithDrawChange = async (e) => {
+    setWithdrawError("");
+    setWithdraw(e);
+  };
+  const handleWithdraw = async () => {
+    try {
+      if (withdraw === "") {
+        setWithdrawError("Please type in a number!");
+      } else {
+        setLoading(true);
+        await contract.withdraw(
+          { withdrawal: parseNearAmount(withdraw) },
+          BOATLOAD_OF_GAS
+        );
+        currentUser && updateCredits();
+        setLoading(false);
+      }
+    } catch (err) {
+      if (
+        err.kind["ExecutionError"] ===
+        "Smart contract panicked: panicked at 'You do not have enough credits to withdraw', src/lib.rs:47:9"
+      ) {
+        setWithdrawError("You don't have enoguh credits to withdraw");
+      }
+
+      setLoading(false);
+    }
   };
   return (
     <>
       <div className="flex flex-row justify-center">
-        <div className="m-1 py-1 basis-1/3 bg-black text-white rounded">
+        <div className="m-1 py-1 w-1/3 bg-black text-white rounded">
           Deposit
         </div>
 
-        <div className="m-1 py-1 basis-1/3 bg-black text-white rounded">
+        <div className="m-1 py-1 w-1/3 bg-black text-white rounded">
           Withdraw
         </div>
       </div>
@@ -45,7 +79,7 @@ const TransactionContainer = ({ contract, updateCredits, currentUser }) => {
             className="m-2 px-2 py-1 bg-gray-400 placeholder-white text-white rounded"
             placeholder="Deposit Credits (N)"
             value={deposit}
-            onChange={(e) => setDeposit(e.target.value)}
+            onChange={(e) => handleDepositChange(e.target.value)}
           />
           <button
             className="rounded bg-green-900 text-white p-1"
@@ -53,23 +87,26 @@ const TransactionContainer = ({ contract, updateCredits, currentUser }) => {
           >
             Buy Credits
           </button>
+          {depositError === "" ? <p> &nbsp;</p> : <p> {depositError}</p>}
         </div>
 
         <div className="m-1 basis-1/3">
-          {" "}
           <input
             className="m-2 px-2 py-1 bg-gray-400 placeholder-white text-white rounded"
             placeholder="Withdraw Credits (N)"
             value={withdraw}
-            onChange={(e) => setWithdraw(e.target.value)}
+            onChange={(e) => handleWithDrawChange(e.target.value)}
           />
           <button
             className="rounded bg-red-900 text-white p-1"
             onClick={() => handleWithdraw()}
           >
-            {" "}
             Withdraw
           </button>
+          <p>
+            <ClipLoader className="mx-2" loading={loading} size={15} />
+          </p>
+          {withdrawError === "" ? <p> &nbsp;</p> : <p> {withdrawError}</p>}
         </div>
       </div>
     </>

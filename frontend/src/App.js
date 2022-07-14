@@ -38,7 +38,6 @@ function App({ contract, currentUser, nearConfig, wallet }) {
     setCredits(formatNearAmount(credits.toLocaleString().replace(/,/g, "")));
   };
 
-  console.log(latestResults);
   const onSubmit = async (e) => {
     setLoading(true);
     !(latestResults.result === null) && setFlips([...flips, latestResults]);
@@ -152,7 +151,7 @@ function App({ contract, currentUser, nearConfig, wallet }) {
           <div className="container mx-auto w-1/4 py-6">
             <p className="text-3xl">Your past results:</p>
             {flips.map((f, i) =>
-              f ? (
+              f.result ? (
                 <p className="bg-green-900 text-white rounded m-2 py-1" key={i}>
                   You picked {f.coinSide} and you won!
                 </p>

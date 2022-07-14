@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
+import * as nearAPI from "near-api-js";
+
+const {
+  utils: {
+    format: { formatNearAmount },
+  },
+} = nearAPI;
 
 const NavBar = ({ currentUser, signIn, signOut }) => {
   const [navbarOpen, setNavbarOpen] = useState(false);
@@ -40,6 +47,20 @@ const NavBar = ({ currentUser, signIn, signOut }) => {
                     <p className="pl-2 text-yellow-300">
                       {" "}
                       {currentUser.accountId}
+                    </p>
+                  </a>
+                </li>
+              )}
+              {currentUser && (
+                <li className="nav-item">
+                  <a
+                    className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white"
+                    href="/"
+                  >
+                    Near in Wallet:{" "}
+                    <p className="pl-2 text-yellow-300">
+                      {" "}
+                      {formatNearAmount(currentUser.balance, 2)}
                     </p>
                   </a>
                 </li>
