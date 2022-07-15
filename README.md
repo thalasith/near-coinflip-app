@@ -1,8 +1,10 @@
+```diff
 # Coinflip Smart Contracting
+```
 
 Huge shout out to Matt Lockyer's tutorial online - a majority of the smart contract is based on that tutorial but with some slight tweaks and additional features (such as withdrawing the credits at the end)
 
-```
+```diff
 + ## Core Tech Stack Used
 ```
 
@@ -18,30 +20,41 @@ Huge shout out to Matt Lockyer's tutorial online - a majority of the smart contr
 - Blockchain: Near Protocol
 - Webhosting: Vercel
 
-## The Purpose of this Project and Reasons for these Purposes
+```diff
++ ## The Purpose of this Project and Reasons for these Purposes
+```
 
-1. Know what a smart contract can be used for.
+```diff
+- 1. Know what a smart contract can be used for.
+```
 
-   - Building this I learnt some definite use cases for smart contracts.
-   - I also chose to build on NEAR Protocol for personal beliefs in the protocol. NEAR is quick to approve transactions, it has cheap fees and it is very developer friendly vs other blockchains that I've seen. The architecture and UX decisions made on the developer side was really impressive.
+- Building this I learnt some definite use cases for smart contracts.
+- I also chose to build on NEAR Protocol for personal beliefs in the protocol. NEAR is quick to approve transactions, it has cheap fees and it is very developer friendly vs other blockchains that I've seen. The architecture and UX decisions made on the developer side was really impressive.
 
-2. Get better at Rust Programming Language.
+```diff
+- 2. Get better at Rust Programming Language.
+```
 
-   - Outside of Ethereum (Solidity language), a majority of smart contracts and blockchains have been built on Rust.
-   - Although Ethereum has the most volume and liquidity, I felt that learning Solidity is too narrow that the only knowledge gained would specifically be for smart contracts.
-   - Learning Rust is a much more general-purpose language and has other applications outside of smart contracts that are potentially useful down the line.
-   - Rust also solidifies my understanding of programming. My previous experiences have been on much higher level languages (i.e. Python and Javascript). Thus Rust exposes me to a variety of new concepts.
-   - I also keep hearing about Move as another Smart Contract Language thats picking up steam. Move is based on Rust and I anticipate there to be learning synergies if Move takes off.
+- Outside of Ethereum (Solidity language), a majority of smart contracts and blockchains have been built on Rust.
+- Although Ethereum has the most volume and liquidity, I felt that learning Solidity is too narrow that the only knowledge gained would specifically be for smart contracts.
+- Learning Rust is a much more general-purpose language and has other applications outside of smart contracts that are potentially useful down the line.
+- Rust also solidifies my understanding of programming. My previous experiences have been on much higher level languages (i.e. Python and Javascript). Thus Rust exposes me to a variety of new concepts.
+- I also keep hearing about Move as another Smart Contract Language thats picking up steam. Move is based on Rust and I anticipate there to be learning synergies if Move takes off.
 
-3. Understand how a smart contract can connect with the front end.
+```diff
+- 3. Understand how a smart contract can connect with the front end.
+```
 
-   - Another issue that I run into as a consumer is not knowing how to interact with a smart contract using Web2 technologies.
-   - Near Protocol has an "npx create-near-app" command that gives you a lot of boiler plate code with integrations to the Near RPC built in. I specifically chose not to do this because I wanted to get my hands dirty with the integration to understand how it works.
-   - This project helped me grasp understandings of javascript libraries that Near Protocol developped to make integration with the frontend much more accessible.
+- Another issue that I run into as a consumer is not knowing how to interact with a smart contract using Web2 technologies.
+- Near Protocol has an "npx create-near-app" command that gives you a lot of boiler plate code with integrations to the Near RPC built in. I specifically chose not to do this because I wanted to get my hands dirty with the integration to understand how it works.
+- This project helped me grasp understandings of javascript libraries that Near Protocol developped to make integration with the frontend much more accessible.
 
-4. Build a UI/UX friendly frontend that people can play around with and that I would be proud of to show to people.
-   - Practice my Frontend skillsets and make sure it is still sharp.
-   - Build a project that I can showcase as part of my portfolio.
+```diff
+- 4. Build a UI/UX friendly frontend that people can play around with and that I would be proud of to show to people.
+```
+
+- Practice my Frontend skillsets and make sure it is still sharp.
+- Build a project that I can showcase as part of my portfolio.
 
 ## Key Features Needed
 
@@ -72,7 +85,9 @@ Below is a list of the key features the application needs and the decision for t
    - We assert that they choose either a heads or tails here otherwise the contract will panick.
    - Frontend will show whether the user won or lose. Frontend keeps a record of this as well.
 
+```diff
 ## Potential Next Steps
+```
 
 While the contract is functional and the frontend is presentable, there are a few modifications that can be made to improve the UI/UX or increased features:
 
