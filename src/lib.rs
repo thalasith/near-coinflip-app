@@ -42,7 +42,10 @@ impl CoinFlip {
     pub fn withdraw(&mut self, withdrawal:U128) -> Promise {
         let account_id = env::signer_account_id();
         let mut credits = self.credits.get(&account_id).unwrap_or(0);
+        println!("Credits: {}", credits);
+        println!("Withdrawal: {}", withdrawal.0);
         assert!(credits >= withdrawal.0, "You do not have enough credits to withdraw");
+        assert!(credits > 0, "no credits to play");
         credits = credits - withdrawal.0;
         self.credits.insert(&account_id, &credits);
         Promise::new(account_id).transfer(withdrawal.0)
@@ -51,8 +54,7 @@ impl CoinFlip {
     pub fn play(&mut self, coin_side: String) -> bool {
         let account_id = env::signer_account_id();
         let mut credits = self.credits.get(&account_id).unwrap_or(0);
-        assert!(credits > 0, "No credits to play");
-        assert!(coin_side == "heads" || coin_side == "tails", "Please pick heads or tails only.");
+        assert!(credits > 0, "no credits to play");
         credits = credits - ONE_NEAR;
 
         let rand: u8 = *env::random_seed().get(0).unwrap();
@@ -60,7 +62,7 @@ impl CoinFlip {
         // let coin_flip: u8 = rand::thread_rng().gen_range(1..=2);
         // if it is equal to 1 and coin_side chosen is heads, player winds
         if (rand < PROB && coin_side == "heads") || (rand >= PROB && coin_side == "tails")  {
-            credits = credits + 2 * ONE_NEAR;
+            credits = credits + ONE_NEAR;
             self.credits.insert(&account_id, &credits);
             return true
         } else  {
@@ -70,6 +72,12 @@ impl CoinFlip {
     }
 
     // View contracts
+    pub fn get_account_balance(&self) -> u128 {
+        let amount = env::account_balance();
+        let deposited = env::attached_deposit();
+        let different = amount - deposited;
+        different
+    }
 
     pub fn get_credits(&self, account_id: AccountId) -> u128 {
         self.credits.get(&account_id).unwrap_or(0).into()
@@ -139,8 +147,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic(expected = "You do not have enough credits to withdraw")]
-    fn make_withdraw_fail_too_much() {
+    fn make_deposit_and_withdraw_fail() {
 
         let mut context = get_context();
         context.attached_deposit = ntoy(1).into();
@@ -151,6 +158,8 @@ mod tests {
         
         assert_eq!(contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()), ntoy(1).into());
         contract.withdraw(ntoy(5).into());
+
+        // assert_eq!(contract.get_credits(AccountId::try_from(context.signer_account_id.clone()).unwrap()), ntoy(0).into());
     }
 
 

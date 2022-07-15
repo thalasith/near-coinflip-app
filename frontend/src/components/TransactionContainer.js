@@ -56,7 +56,7 @@ const TransactionContainer = ({ contract, updateCredits, currentUser }) => {
         err.kind["ExecutionError"] ===
         "Smart contract panicked: panicked at 'You do not have enough credits to withdraw', src/lib.rs:47:9"
       ) {
-        setWithdrawError("You don't have enough credits to withdraw.");
+        setWithdrawError("You don't have enoguh credits to withdraw");
       }
 
       setLoading(false);
@@ -103,15 +103,10 @@ const TransactionContainer = ({ contract, updateCredits, currentUser }) => {
           >
             Withdraw
           </button>
-
-          {withdrawError === "" ? (
-            <p>
-              {" "}
-              &nbsp; <ClipLoader className="mx-2" loading={loading} size={15} />
-            </p>
-          ) : (
-            <p> {withdrawError}</p>
-          )}
+          <p>
+            <ClipLoader className="mx-2" loading={loading} size={15} />
+          </p>
+          {withdrawError === "" ? <p> &nbsp;</p> : <p> {withdrawError}</p>}
         </div>
       </div>
     </>

@@ -153,11 +153,11 @@ function App({ contract, currentUser, nearConfig, wallet }) {
             {flips.map((f, i) =>
               f.result ? (
                 <p className="bg-green-900 text-white rounded m-2 py-1" key={i}>
-                  #{i + 1}. You picked {f.coinSide} and you won!
+                  You picked {f.coinSide} and you won!
                 </p>
               ) : (
                 <p className="bg-red-900 text-white rounded m-2 py-1" key={i}>
-                  #{i + 1}. You picked {f.coinSide} and you lost.
+                  You picked {f.coinside} and you lost.
                 </p>
               )
             )}
