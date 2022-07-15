@@ -1,4 +1,4 @@
-# Coinflip Smart Contracting
+# <span style="color:blue">Coinflip Smart Contracting</span>
 
 Huge shout out to Matt Lockyer's tutorial online - a majority of the smart contract is based on that tutorial but with some slight tweaks and additional features (such as withdrawing the credits at the end)
 
